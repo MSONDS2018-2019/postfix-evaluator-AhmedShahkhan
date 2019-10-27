@@ -96,7 +96,7 @@ public class LinkedStack<T> implements StackInterface<T> {
         head.elem = elem;
         head.next = oldfirst;
 
-
+    }
 
 
 
