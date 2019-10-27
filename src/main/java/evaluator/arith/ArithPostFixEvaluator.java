@@ -1,9 +1,14 @@
 package evaluator.arith;
 
+import evaluator.IllegalPostFixExpressionException;
 import evaluator.PostFixEvaluator;
 import language.Operand;
+import language.Operator;
 import parser.arith.ArithPostFixParser;
+import stack.LinkedStack;
 import stack.StackInterface;
+
+
 
 
 /**
@@ -18,7 +23,8 @@ public class ArithPostFixEvaluator implements PostFixEvaluator<Integer> {
    * Constructs an {@link ArithPostFixEvaluator}.
    */
   public ArithPostFixEvaluator() {
-    this.stack = null; //TODO Initialize to your LinkedStack
+    //TODO Initialize to your LinkedStack
+    this.stack = new LinkedStack<Operand<Integer>>();
   }
 
   /**
@@ -32,20 +38,43 @@ public class ArithPostFixEvaluator implements PostFixEvaluator<Integer> {
 
     ArithPostFixParser parser = new ArithPostFixParser(expr);
     while (parser.hasNext()) {
+//      Type type
       switch (parser.nextType()) { 
         case OPERAND:
           //TODO What do we do when we see an operand?
+          stack.push(parser.nextOperand());
           break;
         case OPERATOR:
           //TODO What do we do when we see an operator?
+
+          Operator<Integer> operatorStack = parser.nextOperator();
+          if(operatorStack.getNumberOfArguments() == 1){
+            operatorStack.setOperand(0, stack.pop());
+          }
+          else {
+            operatorStack.setOperand(1, stack.pop());
+            operatorStack.setOperand(0, stack.pop());
+          }
+          Operand<Integer> result = operatorStack.performOperation();
+          stack.push(result);
+
+
           break;
         default:
           //TODO If we get here, something went terribly wrong
+          throw new IllegalStateException("Parser returned an invalid Type.");
+
       }
     }
 
     //TODO What do we return?
-    return null;
+    Integer result = stack.pop().getValue();
+    if(!stack.isEmpty()){
+      throw new IllegalPostFixExpressionException();
+    }
+    return result;
   }
+
+
 
 }

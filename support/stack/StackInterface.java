@@ -27,7 +27,7 @@ public interface StackInterface<T> {
    * Pushes {@code elem} to the top of this stack.
    */
   public void push(T elem);
-
+  
   /**
    * Returns {@code true} if the stack contains no elements and {@code false} otherwise.
    * @return {@code true} if the stack contains no elements and {@code false} otherwise.
